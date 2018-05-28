@@ -1,0 +1,22 @@
+{
+  "name": "svg-animator",
+  "version": "1.0.0",
+  "description": "Electron app for svg animations",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/runtimeEnvironment/svg-animator.git"
+  },
+  "author": "runtimeEnvironment",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/runtimeEnvironment/svg-animator/issues"
+  },
+  "homepage": "https://github.com/runtimeEnvironment/svg-animator#readme",
+  "dependencies": {
+    "electron": "^2.0.2"
+  }
+}
