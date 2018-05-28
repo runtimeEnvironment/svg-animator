@@ -4,7 +4,8 @@
   "description": "Electron app for svg animations",
   "main": "src/app.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "sass:index": "sass src/styles/sass/index.scss src/styles/css/index.css"
   },
   "repository": {
     "type": "git",
