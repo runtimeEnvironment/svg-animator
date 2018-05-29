@@ -5,7 +5,8 @@
   "main": "src/app.js",
   "scripts": {
     "start": "electron .",
-    "sass:index": "sass src/styles/sass/index.scss src/styles/css/index.css"
+    "sass:index": "sass src/styles/sass/index.scss src/styles/css/index.css",
+    "test": "mocha './text/**/*.spec.js'"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/runtimeEnvironment/svg-animator#readme",
   "dependencies": {
-    "electron": "^2.0.2"
+    "electron": "^2.0.2",
+    "mocha": "^5.2.0"
   }
 }
