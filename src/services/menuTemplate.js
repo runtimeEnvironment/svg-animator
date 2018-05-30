@@ -18,11 +18,12 @@ exports.appMenu = (win) => {
             ]
         },
         {
-            label: 'file',
+            label: 'File',
             submenu: [
                 {
-                    label: 'open',
-                    click: open
+                    label: 'Open',
+                    click: open,
+                    accelerator: process.platform === 'darwin' ? 'Cmd+O' : 'Ctrl+O'
                 }
             ]
         },

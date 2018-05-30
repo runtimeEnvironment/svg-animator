@@ -19,26 +19,15 @@ class SvgParser {
         this.structure = [{}];
 
 
-
-
+        this.composeStructure();
     }
 
     composeStructure() {
 
-
-        // const firstId = gFirst.id;
-        // const gStructure = this.fillGElements();
-        console.log(this.svg);
-        console.log(this.svg.childNodes);
-
         let svgs = Array.from(this.svg.childNodes).filter(el => el.tagName === 'svg');
-        console.log(svgs);
         svgs.forEach((svg, index) => {
             this.fillStructure(svg, index);
         });
-
-        console.log(this.structure);
-        return this.structure;
     }
 
     getElementAtPath(path, arr) {
@@ -51,7 +40,7 @@ class SvgParser {
         return this.getElementAtPath(path.slice(1), tmp);
     }
 
-    setStructureKeyAtPath(obj, path, value = '0') {
+    setValueAtPath(obj, path, value = '0') {
 
         if(path.length === 1) {
             if(!obj[path[0]]) {
@@ -64,7 +53,7 @@ class SvgParser {
         if(!obj[path[0]])
             obj[path[0]] = {};
 
-        return this.setStructureKeyAtPath(obj[path[0]], path.slice(1), value);
+        return this.setValueAtPath(obj[path[0]], path.slice(1), value);
     }
 
     fillStructure(elem, number, path = []) {
@@ -90,10 +79,14 @@ class SvgParser {
 
                     tmpPath.push(child.tagName);
 
-                this.setStructureKeyAtPath(this.structure[number], tmpPath, child.id ? child.id : child.tagName + '-' + counter[child.tagName]++);
+                this.setValueAtPath(this.structure[number], tmpPath, child.id ? child.id : child.tagName + '-' + counter[child.tagName]++);
             }
         }
 
+    }
+
+    getStructure() {
+        return this.structure;
     }
 
 

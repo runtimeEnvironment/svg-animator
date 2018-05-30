@@ -50,7 +50,7 @@ const handleFile = (path) => {
     appDiv.innerHTML = svgElement;
 
     let svgParser = new SvgParser(svgElement);
-    let objectsArchitecture = svgParser.composeStructure();
+    let objectsArchitecture = svgParser.getStructure();
 
     document.getElementById('objects-content').innerHTML = `
         <code> ${JSON.stringify(objectsArchitecture, null, 4)} </code>
