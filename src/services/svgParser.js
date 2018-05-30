@@ -1,15 +1,23 @@
 
-const svgElements = ['path', 'circle', 'line', 'ellipse', 'polygon', 'text'];
+const svgElements = ['path', 'circle', 'line', 'ellipse', 'polygon', 'text', 'image'];
+let counter = {
+    svg: 1,
+    path: 1,
+    g: 1,
+    circle: 1,
+    line: 1,
+    ellipse: 1,
+    polygon: 1,
+    text: 1
+};
 
 class SvgParser {
 
     constructor(svg) {
 
         this.svg = new DOMParser().parseFromString(svg, 'text/xml');
-        this.structure = {
+        this.structure = [{}];
 
-        };
-        this.counter = 1;
 
 
 
@@ -17,12 +25,19 @@ class SvgParser {
 
     composeStructure() {
 
-        const gFirst = this.svg.getElementsByTagName('g')[0];
+
         // const firstId = gFirst.id;
         // const gStructure = this.fillGElements();
+        console.log(this.svg);
+        console.log(this.svg.childNodes);
 
-        this.fillStructure(gFirst);
+        let svgs = Array.from(this.svg.childNodes).filter(el => el.tagName === 'svg');
+        console.log(svgs);
+        svgs.forEach((svg, index) => {
+            this.fillStructure(svg, index);
+        });
 
+        console.log(this.structure);
         return this.structure;
     }
 
@@ -52,10 +67,10 @@ class SvgParser {
         return this.setStructureKeyAtPath(obj[path[0]], path.slice(1), value);
     }
 
-    fillStructure(elem, path = []) {
+    fillStructure(elem, number, path = []) {
 
         let tmpPath = path.filter(e => svgElements.indexOf(e) === -1);
-        tmpPath.push(elem.id ? elem.id : elem.tagName + '-' + this.counter++);
+        tmpPath.push(elem.id ? elem.id : elem.tagName + '-' + counter[elem.tagName]++);
 
         for(let child of elem.childNodes) {
             if(child.tagName === 'g') {
@@ -67,13 +82,15 @@ class SvgParser {
                 if(tmpPath[tmpPath.length -1] !== 'g')
                     tmpPath.push('g');
 
-                this.fillStructure(child, tmpPath);
+                this.fillStructure(child, number, tmpPath);
             } else if(svgElements.indexOf(child.tagName) !== -1) {
 
-                if(svgElements.indexOf(tmpPath[tmpPath.length - 1]) === -1)
+                if(svgElements.indexOf(tmpPath[tmpPath.length - 1]) !== -1)
+                    tmpPath = tmpPath.slice(0, tmpPath.length -1);
+
                     tmpPath.push(child.tagName);
 
-                this.setStructureKeyAtPath(this.structure, tmpPath, child.id ? child.id : child.tagName + '-' + this.counter++);
+                this.setStructureKeyAtPath(this.structure[number], tmpPath, child.id ? child.id : child.tagName + '-' + counter[child.tagName]++);
             }
         }
 
