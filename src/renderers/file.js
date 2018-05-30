@@ -1,6 +1,6 @@
 const electron = require('electron'),
 
-    { ipcRenderer: ipc } = electron,
+    { ipcRenderer: ipc, remote } = electron,
 
     SvgParser = require('../services/svgParser');
     fileService = require('../services/fileService');
@@ -20,23 +20,13 @@ document.addEventListener('drop', e => {
     e.preventDefault();
     e.stopPropagation();
 
-    let appDiv = document.getElementById('workspace');
 
-    console.log(e.dataTransfer.files[0]);
-    let text = '<p> Files dropped: <p>';
+
     let files = Array.from(e.dataTransfer.files).filter(file => isSVG(file));
-    for(let f of files) {
-        text += `<p> ${f.path} </p>`;
-    }
-    const svgElement = fileService.getFileContent(files[0].path);
-    appDiv.innerHTML = svgElement;
+    const path = files[0].path;
+    handleFile(path);
 
-    let svgParser = new SvgParser(svgElement);
-    let objectsArchitecture = svgParser.composeStructure();
 
-    document.getElementById('objects-content').innerHTML = `
-        <code> ${JSON.stringify(objectsArchitecture, null, 4)} </code>
-    `;
 });
 
 document.addEventListener('dragover', e => {
@@ -48,7 +38,25 @@ document.addEventListener('dragover', e => {
     console.log('File hover');
 });
 
+
+
 const isSVG = (file) => {
     return file.type.indexOf('image/svg+xml') !== -1;
 };
 
+const handleFile = (path) => {
+    let appDiv = document.getElementById('workspace');
+    const svgElement = fileService.getFileContent(path);
+    appDiv.innerHTML = svgElement;
+
+    let svgParser = new SvgParser(svgElement);
+    let objectsArchitecture = svgParser.composeStructure();
+
+    document.getElementById('objects-content').innerHTML = `
+        <code> ${JSON.stringify(objectsArchitecture, null, 4)} </code>
+    `;
+}
+
+ipc.on('open', (evt, path)=> {
+    handleFile(path);
+});
