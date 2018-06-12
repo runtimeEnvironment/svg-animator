@@ -18,10 +18,10 @@ class SvgParser {
         this.svg = new DOMParser().parseFromString(svg, 'text/xml');
         this.structure = [{}];
         this.htmlStructure = "";
+        this.elementsIds = [];
 
 
         this.composeStructure();
-        console.log(JSON.stringify(this.structure));
         this.fillHtmlStructure([0]);
     }
 
@@ -62,7 +62,10 @@ class SvgParser {
     fillStructure(elem, number, path = []) {
 
         let tmpPath = path.filter(e => svgElements.indexOf(e) === -1);
-        tmpPath.push(elem.id ? elem.id : elem.tagName + '-' + counter[elem.tagName]++);
+
+        let elemId = this.assignId(elem);
+
+        tmpPath.push(elemId);
 
         for(let child of elem.childNodes) {
             if(child.tagName === 'g') {
@@ -82,7 +85,10 @@ class SvgParser {
 
                     tmpPath.push(child.tagName);
 
-                this.setValueAtPath(this.structure[number], tmpPath, child.id ? child.id : child.tagName + '-' + counter[child.tagName]++);
+                    let value = this.assignId(child);
+
+
+                this.setValueAtPath(this.structure[number], tmpPath, value);
             }
         }
 
@@ -90,6 +96,7 @@ class SvgParser {
 
     fillHtmlStructure(path) {
         let elems;
+
         try {
             elems = Object.keys(this.getElementAtPath(path, this.structure));
         } catch(e) {
@@ -159,6 +166,39 @@ class SvgParser {
         return this.structure;
     }
 
+    createRandomId(tag) {
+        return tag + "-" + this.random() + "" + this.random() + "" + this.random() + "" + this.random() + "" + this.random() + "" + this.random() + "" + this.random();
+
+    }
+
+    random() {
+        if(Math.random() > 0.5) {
+            return String.fromCharCode(Math.floor(Math.random() * (91 - 65) + 65));
+        } else {
+            return String.fromCharCode(Math.floor(Math.random() * (123 - 97) + 97));
+        }
+    }
+
+    assignId(node) {
+        let value;
+
+        if(node.id && this.elementsIds.indexOf(node.id) === -1) {
+            value = node.id;
+            this.elementsIds.push(node.id);
+        } else {
+            while(value === undefined || this.elementsIds.indexOf(value) !== -1) {
+                value = this.createRandomId(node.tagName);
+            }
+            node.id = value;
+            this.elementsIds.push(value);
+        }
+
+        return value;
+    }
+
+    getSVG() {
+        return new XMLSerializer().serializeToString(this.svg);
+    }
 
 
     /*

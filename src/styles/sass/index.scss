@@ -53,12 +53,14 @@ w-100p {
       .name {
         justify-self: center;
         text-align: center;
+        cursor: default;
       }
       .arrow {
         justify-self: center;
         transition: all 0.3s;
         padding-top: 0.5vh;
         width: 1rem;
+        cursor: pointer;
       }
       .arrow-down {
         transform: rotate(90deg) translate(5px, -5px);

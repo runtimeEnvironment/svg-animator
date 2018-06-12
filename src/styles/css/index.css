@@ -38,12 +38,14 @@ w-100p {
       border-bottom: solid 0.1px black; }
       #app #objects .group .name {
         justify-self: center;
-        text-align: center; }
+        text-align: center;
+        cursor: default; }
       #app #objects .group .arrow {
         justify-self: center;
         transition: all 0.3s;
         padding-top: 0.5vh;
-        width: 1rem; }
+        width: 1rem;
+        cursor: pointer; }
       #app #objects .group .arrow-down {
         transform: rotate(90deg) translate(5px, -5px); }
       #app #objects .group .arrow-left {

@@ -6,7 +6,9 @@ const electron = require('electron'),
     SvgParser = require('../services/svgParser'),
     fileService = require('../services/fileService');
 
-
+let defaults = {};
+let highlightColor = 'blue';
+let selected = null;
 /*
 document.getElementsByTagName('svg')[0].childNodes[0].transform.baseVal[0].matrix.a = 1
 
@@ -37,7 +39,6 @@ document.addEventListener('dragover', e => {
 
 
 
-    console.log('File hover');
 });
 
 
@@ -49,13 +50,15 @@ const isSVG = (file) => {
 const handleFile = (path) => {
     let appDiv = $('#workspace');
     const svgElement = fileService.getFileContent(path);
-    appDiv.innerHTML = svgElement;
+
 
     let svgParser = new SvgParser(svgElement);
+    appDiv.innerHTML = svgParser.getSVG();
     let objectsArchitecture = svgParser.getHTML();
 
     $('#objects-content').innerHTML = objectsArchitecture;
     arrowClick();
+    highlight();
 };
 
 ipc.on('open', (evt, path)=> {
@@ -81,7 +84,6 @@ const arrowClick = () => {
 
                 children.forEach(child => {
                     if('classList' in child) {
-                        console.log(child);
                         if(child.classList.contains('hidden')) {
                             child.classList.remove('hidden');
                             child.classList.add('show');
@@ -105,4 +107,47 @@ const arrowClick = () => {
         });
 
     });
+};
+
+const highlight = () => {
+    document.querySelectorAll('.name').forEach(name => {
+        name.addEventListener('click', function () {
+            if(this.style.background !== highlightColor) {
+                this.style.background = highlightColor;
+
+                let id = "#" + this.innerHTML.trim();
+                const node = $(id);
+
+                defaults[id] = {};
+                defaults[id]['stroke'] = node.style.stroke;
+                defaults[id]['strokeWidth'] = node.style.strokeWidth;
+                defaults[id]['fill'] = node.style.fill;
+
+                node.style.stroke = 'blue';
+                node.style.strokeWidth = '3px';
+                node.style.fill = '#ADD8E6';
+
+                if(selected)
+                    restoreDefaults(selected);
+
+                selected = this;
+
+
+            } else {
+                restoreDefaults(this);
+            }
+
+        });
+    });
+};
+
+const restoreDefaults = (p) => {
+    p.style.background = 'none';
+
+    let id = "#" + p.innerHTML.trim();
+    const node = $(id);
+
+    node.style.stroke = defaults[id]['stroke'];
+    node.style.strokeWidth = defaults[id]['strokeWidth'];
+    node.style.fill = defaults[id]['fill'];
 };
