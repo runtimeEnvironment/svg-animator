@@ -4,6 +4,15 @@ body {
   min-width: 100vw;
   min-height: 100vh; }
 
+w-100p {
+  width: 100%; }
+
+.hidden {
+  display: none; }
+
+.show {
+  display: block; }
+
 #app {
   display: grid;
   grid-template-columns: 4fr 1fr 1fr;
@@ -12,18 +21,38 @@ body {
   #app #workspace {
     justify-self: center;
     align-self: center; }
+    #app #workspace svg {
+      width: 100%;
+      height: 100%; }
   #app #properties {
     display: flex;
     justify-content: center;
     border-left: solid 1px black; }
   #app #objects {
-    display: grid;
-    grid-template-columns: 1fr;
-    justify-items: center;
+    display: inline-block;
     border-left: solid 1px black; }
-
-svg {
-  width: 100%;
-  height: 100%; }
+    #app #objects h3 {
+      text-align: center; }
+    #app #objects .group {
+      border-top: solid 0.1px black;
+      border-bottom: solid 0.1px black; }
+      #app #objects .group .name {
+        justify-self: center;
+        text-align: center; }
+      #app #objects .group .arrow {
+        justify-self: center;
+        transition: all 0.3s;
+        padding-top: 0.5vh;
+        width: 1rem; }
+      #app #objects .group .arrow-down {
+        transform: rotate(90deg) translate(5px, -5px); }
+      #app #objects .group .arrow-left {
+        transform: rotate(180deg); }
+    #app #objects .group-props {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      align-items: center; }
+    #app #objects .group-objects {
+      grid-template-columns: 1fr; }
 
 /*# sourceMappingURL=index.css.map */

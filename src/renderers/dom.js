@@ -1,0 +1,1 @@
+exports.$ = selector => document.querySelector(selector);

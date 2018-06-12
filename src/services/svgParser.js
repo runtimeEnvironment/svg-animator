@@ -17,9 +17,12 @@ class SvgParser {
 
         this.svg = new DOMParser().parseFromString(svg, 'text/xml');
         this.structure = [{}];
+        this.htmlStructure = "";
 
 
         this.composeStructure();
+        console.log(JSON.stringify(this.structure));
+        this.fillHtmlStructure([0]);
     }
 
     composeStructure() {
@@ -83,6 +86,73 @@ class SvgParser {
             }
         }
 
+    }
+
+    fillHtmlStructure(path) {
+        let elems;
+        try {
+            elems = Object.keys(this.getElementAtPath(path, this.structure));
+        } catch(e) {
+            console.error(path);
+        }
+
+        let visible = path.length === 1 ? 'show' : 'hidden';
+        let newPath = path;
+
+        for(let el of elems) {
+
+            if(svgElements.indexOf(el) === -1 && el != 'g') {
+
+                this.htmlStructure += `
+                    <div class="${visible} group">
+                        <div class="group-props">
+                            <p class="name">${el}</p>
+                            <svg viewBox="0 0 20 20" class="arrow arrow-down">
+                                <path d="M0 0 L10 10 L0 20"></path>
+                            </svg>
+                        </div>      
+                `;
+
+                newPath.push(el);
+
+
+                this.fillHtmlStructure(newPath);
+
+                if(elems.length > 1) {
+                    newPath.splice(newPath.indexOf(el), newPath.length);
+                }
+
+                this.htmlStructure += "</div>";
+
+            } else if(svgElements.indexOf(el) !== -1) {
+                this.htmlStructure += `
+                    <div class="hidden group-objects">
+                `;
+                newPath.push(el);
+
+                Object.values(this.getElementAtPath(newPath, this.structure)).forEach(fin => {
+                    this.htmlStructure += `
+                        <p class="name">${fin}</p>
+                    `
+                });
+                this.htmlStructure += `
+                    </div>
+                `;
+                newPath.pop();
+            } else {
+                newPath.push(el);
+                this.fillHtmlStructure(newPath);
+            }
+
+
+
+        };
+
+
+    }
+
+    getHTML() {
+        return this.htmlStructure;
     }
 
     getStructure() {

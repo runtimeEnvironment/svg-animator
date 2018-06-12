@@ -4,7 +4,7 @@
   "description": "Electron app for svg animations",
   "main": "src/app.js",
   "scripts": {
-    "start": "electron .",
+    "start": "sass src/styles/sass/index.scss src/styles/css/index.css & electron .",
     "sass:index": "sass src/styles/sass/index.scss src/styles/css/index.css",
     "test": "mocha './text/**/*.spec.js'"
   },

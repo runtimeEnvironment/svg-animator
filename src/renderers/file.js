@@ -2,8 +2,10 @@ const electron = require('electron'),
 
     { ipcRenderer: ipc, remote } = electron,
 
-    SvgParser = require('../services/svgParser');
+    {$} = require('./dom');
+    SvgParser = require('../services/svgParser'),
     fileService = require('../services/fileService');
+
 
 /*
 document.getElementsByTagName('svg')[0].childNodes[0].transform.baseVal[0].matrix.a = 1
@@ -45,18 +47,62 @@ const isSVG = (file) => {
 };
 
 const handleFile = (path) => {
-    let appDiv = document.getElementById('workspace');
+    let appDiv = $('#workspace');
     const svgElement = fileService.getFileContent(path);
     appDiv.innerHTML = svgElement;
 
     let svgParser = new SvgParser(svgElement);
-    let objectsArchitecture = svgParser.getStructure();
+    let objectsArchitecture = svgParser.getHTML();
 
-    document.getElementById('objects-content').innerHTML = `
-        <code> ${JSON.stringify(objectsArchitecture, null, 4)} </code>
-    `;
-}
+    $('#objects-content').innerHTML = objectsArchitecture;
+    arrowClick();
+};
 
 ipc.on('open', (evt, path)=> {
     handleFile(path);
 });
+
+const arrowClick = () => {
+    document.querySelectorAll('.arrow').forEach(arrow => {
+
+        arrow.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const parent = this.parentNode;
+            const parentOfParent = parent.parentNode;
+            const children = parentOfParent.childNodes;
+
+
+            const classList = Array.from(this.classList);
+
+            if(classList.indexOf('arrow-down') !== -1) {
+                this.classList.remove('arrow-down');
+                this.classList.add('arrow-left');
+
+                children.forEach(child => {
+                    if('classList' in child) {
+                        console.log(child);
+                        if(child.classList.contains('hidden')) {
+                            child.classList.remove('hidden');
+                            child.classList.add('show');
+                        }
+                    }
+                });
+            } else {
+                this.classList.remove('arrow-left');
+                this.classList.add('arrow-down');
+
+                children.forEach(child => {
+                    if('classList' in child) {
+                        if(child.classList.contains('show')) {
+                            child.classList.remove('show');
+                            child.classList.add('hidden');
+                        }
+                    }
+                });
+            }
+
+        });
+
+    });
+};
